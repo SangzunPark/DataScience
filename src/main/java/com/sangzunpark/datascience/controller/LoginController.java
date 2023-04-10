@@ -12,10 +12,4 @@ public class LoginController {
         return "login";
     }
 
-    @GetMapping("/signup")
-    public String signup(HttpServletRequest request){
-        return "signup";
-    }
-
-
 }

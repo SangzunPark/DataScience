@@ -10,6 +10,17 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        function check(){
+            let password1 = document.getElementById("password");
+            let password2 = document.getElementById("confirm-password");
+            if(password1.value != password2.value){
+                alert("The passwords for verification do not match.");
+                return false;
+            }
+            return true;
+        }
+    </script>
 </head>
 <body>
 <div class="container mt-5">
@@ -20,7 +31,7 @@
                     Sign Up
                 </div>
                 <div class="card-body">
-                    <form method="post">
+                    <form name="signupForm" method="post" action="/signupProc" onsubmit="return check();">
                         <div class="form-group">
                             <label for="username">Username</label>
                             <input type="text" class="form-control" id="username" name="username" required="Please fill out this field">
