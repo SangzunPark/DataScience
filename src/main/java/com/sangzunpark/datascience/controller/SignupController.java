@@ -32,7 +32,7 @@ public class SignupController {
 
         //공백체크
         if(!StringUtils.hasText(username) || !StringUtils.hasText(email) || !StringUtils.hasText(password)){
-            return "redirect:/singup?error=empty";
+            return "redirect:/signup?error=empty";
         }
 
         List<Integer> duplicateUserCount =  jdbcTemplate.query(
@@ -46,7 +46,7 @@ public class SignupController {
 
         //이미 있는 아이디인지 체크
         if(duplicateUserCount.size()>0 && duplicateUserCount.get(0)>0){
-            return "redirect:/singup?error=duplicated";
+            return "redirect:/signup?error=duplicated";
         }
 
         int updateCount = jdbcTemplate.update(
@@ -57,7 +57,7 @@ public class SignupController {
         if(updateCount==1){
             return "redirect:/login";
         }else{
-            return "redirect:/singup?error=unknown";
+            return "redirect:/signup?error=unknown";
         }
 
     }
