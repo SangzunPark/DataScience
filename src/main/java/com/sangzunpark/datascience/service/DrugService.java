@@ -77,7 +77,7 @@ public class DrugService {
             paramList.add("%"+param.getSearchText()+"%");
         }
 
-        List<Integer> totalCount = jdbcTemplate.query("select count(*) as CNT from ("+sql+")", paramList.toArray() , new RowMapper<Integer>() {
+        List<Integer> totalCount = jdbcTemplate.query("select count(*) as CNT from ("+sql+") as total_temp ", paramList.toArray() , new RowMapper<Integer>() {
             @Override
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return rs.getInt("CNT");
