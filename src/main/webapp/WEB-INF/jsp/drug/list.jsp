@@ -272,9 +272,10 @@
 </head>
 <body>
 <div class="container">
+    <!-- 로그아웃 버튼 -->
     <div class="row" style="height:20px;">
     </div>
-    <div class="row">
+    <div class="row justify-content-between">
         <div class="col-md-2">
             <select id="YearCombo" class="form-control">
                 <option value="">Year</option>
@@ -290,9 +291,15 @@
                 <option value="">Generic</option>
             </select>
         </div>
-        <div class="input-group col-md-2" style="white-space: nowrap">
-            <input id="searchText" type="text" class="form-control" placeholder="search text here">
-            <button id="searchButton" class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+        <div class="col-md-4">
+            <div class="input-group" style="white-space: nowrap">
+                <input id="searchText" type="text" class="form-control" placeholder="search text here">
+                <button id="searchButton" class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+
+        <div class="col-md-1  text-right">
+            <a href="/logout" class="btn btn-danger btn-block">Logout</a>
         </div>
     </div>
     <div class="row" style="height:20px;">

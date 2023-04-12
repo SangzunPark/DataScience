@@ -9,6 +9,8 @@ import com.sangzunpark.datascience.dto.mapper.DrugMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -112,9 +114,13 @@ public class DrugService {
 
         List<Drug> drugList =  jdbcTemplate.query(sql, paramList.toArray() , new DrugMapper());
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         DrugResponse response = new DrugResponse();
         response.setList(drugList);
         response.setTotalCount(totalCount.get(0));
+        response.setAdmin(authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ADMIN")));
         return response;
     }
 }

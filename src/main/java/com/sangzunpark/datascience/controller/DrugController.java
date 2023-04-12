@@ -5,6 +5,9 @@ import com.sangzunpark.datascience.service.DrugService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +28,11 @@ public class DrugController {
     public ModelAndView list(HttpServletRequest request){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("drug/list");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //List<GrantedAuthority> authorities = (List<GrantedAuthority>) authentication.getAuthorities();
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ADMIN"));
+        modelAndView.addObject("IsAdmin",isAdmin);
         return modelAndView;
     }
 
