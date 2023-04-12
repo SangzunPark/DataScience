@@ -1,9 +1,6 @@
 package com.sangzunpark.datascience.service;
 
-import com.sangzunpark.datascience.dto.CodeValue;
-import com.sangzunpark.datascience.dto.Drug;
-import com.sangzunpark.datascience.dto.DrugParam;
-import com.sangzunpark.datascience.dto.DrugResponse;
+import com.sangzunpark.datascience.dto.*;
 import com.sangzunpark.datascience.dto.mapper.CodeValueMapper;
 import com.sangzunpark.datascience.dto.mapper.DrugMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +41,46 @@ public class DrugService {
                 "select Year_Code as CODE , Year_Name as NAME " +
                         "from YearDim ", new CodeValueMapper());
         return codeValueList;
+    }
+
+    public UpdateResult modifyDrug(Drug param){
+        boolean success = true;
+        UpdateResult updateResult = new UpdateResult();
+
+        List<Object> paramList = new ArrayList<>();
+        paramList.add(param.getClaimCount());
+        paramList.add(param.getTotalSpending());
+        paramList.add(param.getBeneficiaryCount());
+        paramList.add(param.getTotalAnnualSpendingPerUser());
+        paramList.add(param.getUnitCount());
+        paramList.add(param.getAverageCostPerUnit());
+        paramList.add(param.getBeneficiaryCountNoLIS());
+        paramList.add(param.getBeneficiaryCountLIS());
+        paramList.add(param.getYearCode());
+        paramList.add(param.getBrandCode());
+        paramList.add(param.getGenericCode());
+
+        try{
+            String sql = "update medi_fact set " +
+                            "   Claim_Count = ?" +
+                            " , Total_Spending = ? " +
+                            " , Beneficiary_Count = ? " +
+                            " , Total_Annual_Spending_per_User = ? " +
+                            " , Unit_Count = ? " +
+                            " , Average_Cost_Per_Unit = ? " +
+                            " , Beneficiary_Count_No_LIS = ? " +
+                            " , Beneficiary_Count_LIS = ? " +
+                        " where Year_Code = ? " +
+                        "   and Brand_Code = ? " +
+                        "   and Generic_Code = ? ";
+            int updateCount = jdbcTemplate.update(sql,paramList.toArray());
+            updateResult.setUpdateCount(updateCount);
+        }catch(Exception e){
+            success = false;
+            updateResult.setErrorMessage(e.getMessage());
+        }
+        updateResult.setSuccess(success);
+        return updateResult;
     }
 
     public DrugResponse getDrugList(DrugParam param){

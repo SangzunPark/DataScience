@@ -24,6 +24,13 @@
         i.fas{
             margin-left:5px;
         }
+        input.rowEdit{
+            height:30px;
+            width:70px;
+        }
+        .secondButton{
+            margin-left:5px;
+        }
     </style>
     <!-- 부트스트랩 JS 파일 -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -136,7 +143,152 @@
             //     search();
             // });
         }
+        let printRowValue = function(obj, drugItem, admin){
+            obj.yearTd.setAttribute("code",drugItem.yearCode);
+            obj.yearTd.innerHTML = drugItem.yearName;
+            obj.brandTd.setAttribute("code", drugItem.brandCode);
+            obj.brandTd.innerHTML = drugItem.brandName;
+            obj.genericTd.setAttribute("code", drugItem.genericCode);
+            obj.genericTd.innerHTML = drugItem.genericName;
 
+            obj.td1.innerHTML = drugItem.claimCount;
+            obj.td2.innerHTML = drugItem.totalSpending;
+            obj.td3.innerHTML = drugItem.beneficiaryCount;
+            obj.td4.innerHTML = drugItem.totalAnnualSpendingPerUser;
+            obj.td5.innerHTML = drugItem.unitCount;
+            obj.td6.innerHTML = drugItem.averageCostPerUnit;
+            obj.td7.innerHTML = drugItem.beneficiaryCountNoLIS;
+            obj.td8.innerHTML = drugItem.beneficiaryCountLIS;
+            obj.tdButtun.innerHTML = "";
+            if(admin) {
+                let button1 = document.createElement("button");
+                button1.className = "btn btn-sm btn-info";
+                button1.innerText = "Modify";
+                button1.addEventListener("click", function () {
+                    printRowEdit(obj, drugItem, admin);
+                });
+                obj.tdButtun.appendChild(button1);
+
+                let button2 = document.createElement("button");
+                button2.className = "btn btn-sm btn-info secondButton";
+                button2.innerText = "Delete";
+                button2.addEventListener("click", function () {
+
+                });
+                obj.tdButtun.appendChild(button2);
+            }
+        }
+        let printRowEdit = function(obj, drugItem, admin){
+            obj.td1.innerHTML = "";
+            obj.td2.innerHTML = "";
+            obj.td3.innerHTML = "";
+            obj.td4.innerHTML = "";
+            obj.td5.innerHTML = "";
+            obj.td6.innerHTML = "";
+            obj.td7.innerHTML = "";
+            obj.td8.innerHTML = "";
+            obj.tdButtun.innerHTML = "";
+
+            let valueObj1 = document.createElement("input");
+            let valueObj2 = document.createElement("input");
+            let valueObj3 = document.createElement("input");
+            let valueObj4 = document.createElement("input");
+            let valueObj5 = document.createElement("input");
+            let valueObj6 = document.createElement("input");
+            let valueObj7 = document.createElement("input");
+            let valueObj8 = document.createElement("input");
+            valueObj1.className = "form-control rowEdit";
+            valueObj2.className = "form-control rowEdit";
+            valueObj3.className = "form-control rowEdit";
+            valueObj4.className = "form-control rowEdit";
+            valueObj5.className = "form-control rowEdit";
+            valueObj6.className = "form-control rowEdit";
+            valueObj7.className = "form-control rowEdit";
+            valueObj8.className = "form-control rowEdit";
+
+            valueObj1.type = "number";
+            valueObj2.type = "number";
+            valueObj3.type = "number";
+            valueObj4.type = "number";
+            valueObj5.type = "number";
+            valueObj6.type = "number";
+            valueObj7.type = "number";
+            valueObj8.type = "number";
+
+            valueObj1.value = drugItem.claimCount;
+            valueObj2.value = drugItem.totalSpending;
+            valueObj3.value = drugItem.beneficiaryCount;
+            valueObj4.value = drugItem.totalAnnualSpendingPerUser;
+            valueObj5.value = drugItem.unitCount;
+            valueObj6.value = drugItem.averageCostPerUnit;
+            valueObj7.value = drugItem.beneficiaryCountNoLIS;
+            valueObj8.value = drugItem.beneficiaryCountLIS;
+
+            obj.td1.appendChild(valueObj1);
+            obj.td2.appendChild(valueObj2);
+            obj.td3.appendChild(valueObj3);
+            obj.td4.appendChild(valueObj4);
+            obj.td5.appendChild(valueObj5);
+            obj.td6.appendChild(valueObj6);
+            obj.td7.appendChild(valueObj7);
+            obj.td8.appendChild(valueObj8);
+
+            let button1 = document.createElement("button");
+            button1.className = "btn btn-sm btn-info";
+            button1.innerText = "Save";
+            button1.addEventListener("click",function () {
+                let saveParam = {};
+                saveParam.yearCode = drugItem.yearCode;
+                saveParam.yearName = null;
+                saveParam.brandCode = drugItem.brandCode;
+                saveParam.brandName = null;
+                saveParam.genericCode = drugItem.genericCode;
+                saveParam.genericName = null;
+                saveParam.claimCount = valueObj1.value;
+                saveParam.totalSpending = valueObj2.value;
+                saveParam.beneficiaryCount = valueObj3.value;
+                saveParam.totalAnnualSpendingPerUser = valueObj4.value;
+                saveParam.unitCount = valueObj5.value;
+                saveParam.averageCostPerUnit = valueObj6.value;
+                saveParam.beneficiaryCountNoLIS = valueObj7.value;
+                saveParam.beneficiaryCountLIS = valueObj8.value;
+                modify(saveParam);
+            });
+            obj.tdButtun.appendChild(button1);
+
+            let button2 = document.createElement("button");
+            button2.className = "btn btn-sm btn-info secondButton";
+            button2.innerText = "Cancel";
+            button2.addEventListener("click",function () {
+                printRowValue(obj, drugItem, admin);
+            });
+            obj.tdButtun.appendChild(button2);
+
+        }
+        let modify = function(saveParam){
+            $.ajax({
+                async: false,
+                type: "POST",
+                url: "/drug/drugModify",
+                data: JSON.stringify(saveParam),
+                dataType: 'json',
+                contentType: "application/json",
+                success: function (data) {
+                    if(data.success==false){
+                        alert(data.errorMessage);
+                        return;
+                    }
+                    clearPageNum();
+                    clearSortInfo();
+                    search();
+                },
+                error: function (xhr, status, e) {
+                    let httpStatusCode = xhr.status;
+                    alert("error : "+httpStatusCode);
+
+                }
+            });
+        }
         let search = function() {
             let paramObj = {
                 year : null,
@@ -170,7 +322,7 @@
                 contentType: "application/json",
                 success: function (data) {
                     if(data.result!=null){
-
+                        let admin = data.result.admin;
                         let totalPage = Math.ceil(data.result.totalCount / getPageSize());
                         document.getElementById("pageNum").setAttribute("max",totalPage);
                         document.getElementById("pageNumInfo").innerText = "of "+totalPage;
@@ -191,22 +343,9 @@
                             let td6 = document.createElement("td");
                             let td7 = document.createElement("td");
                             let td8 = document.createElement("td");
-
-                            yearTd.setAttribute("code",drugItem.yearCode);
-                            yearTd.innerText = drugItem.yearName;
-                            brandTd.setAttribute("code", drugItem.brandCode);
-                            brandTd.innerText = drugItem.brandName;
-                            genericTd.setAttribute("code", drugItem.genericCode);
-                            genericTd.innerText = drugItem.genericName;
-
-                            td1.innerText = drugItem.claimCount;
-                            td2.innerText = drugItem.totalSpending;
-                            td3.innerText = drugItem.beneficiaryCount;
-                            td4.innerText = drugItem.totalAnnualSpendingPerUser;
-                            td5.innerText = drugItem.unitCount;
-                            td6.innerText = drugItem.averageCostPerUnit;
-                            td7.innerText = drugItem.beneficiaryCountNoLIS;
-                            td8.innerText = drugItem.beneficiaryCountLIS;
+                            let tdButtun = document.createElement("td");
+                            let tdObj = {yearTd:yearTd, brandTd:brandTd, genericTd:genericTd, tdButtun:tdButtun
+                                ,td1:td1,td2:td2,td3:td3,td4:td4,td5:td5,td6:td6,td7:td7,td8:td8};
 
                             tr.appendChild(yearTd);
                             tr.appendChild(brandTd);
@@ -219,6 +358,9 @@
                             tr.appendChild(td6);
                             tr.appendChild(td7);
                             tr.appendChild(td8);
+                            tr.appendChild(tdButtun);
+
+                            printRowValue(tdObj, drugItem, admin);
 
                             tableBody.appendChild(tr);
                         }
@@ -271,7 +413,7 @@
     </script>
 </head>
 <body>
-<div class="container">
+<div class="container-fluid">
     <!-- 로그아웃 버튼 -->
     <div class="row" style="height:20px;">
     </div>
@@ -323,7 +465,7 @@
                 <th id="sort6" class="sortable" data-sort="avg_cost_per_unit">Average Cost per Unit</th>
                 <th id="sort7" class="sortable" data-sort="beneficiary_count_no_lis">Beneficiary Count No LIS</th>
                 <th id="sort8" class="sortable" data-sort="beneficiary_count_lis">Beneficiary Count LIS</th>
-                <th></th>
+                <th style="${IsAdmin ? 'width:160px' : 'width:0px'}"></th>
             </tr>
             </thead>
             <tbody id="drugListTableBody">

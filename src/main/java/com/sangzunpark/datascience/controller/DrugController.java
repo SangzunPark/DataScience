@@ -1,12 +1,12 @@
 package com.sangzunpark.datascience.controller;
 
 import com.sangzunpark.datascience.dto.*;
+import com.sangzunpark.datascience.dto.UpdateResult;
 import com.sangzunpark.datascience.service.DrugService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,5 +57,10 @@ public class DrugController {
         ResponseResult responseResult = new ResponseResult();
         responseResult.setResult(response);
         return new ResponseEntity<>(responseResult, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/drug/drugModify", method={RequestMethod.POST, RequestMethod.GET})
+    public ResponseEntity<UpdateResult> drugModify(@RequestBody Drug param){
+        return new ResponseEntity<>(drugService.modifyDrug(param), HttpStatus.OK);
     }
 }
