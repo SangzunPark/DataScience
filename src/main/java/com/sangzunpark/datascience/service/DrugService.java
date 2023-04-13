@@ -253,7 +253,30 @@ public class DrugService {
             if(param.getOrderByColumn().equals("Generic")){
                 sql += " g.Generic_Name ";
             }
-
+            if(param.getOrderByColumn().equals("sort1")){
+                sql += " f.Claim_Count ";
+            }
+            if(param.getOrderByColumn().equals("sort2")){
+                sql += " f.Total_Spending ";
+            }
+            if(param.getOrderByColumn().equals("sort3")){
+                sql += " f.Beneficiary_Count ";
+            }
+            if(param.getOrderByColumn().equals("sort4")){
+                sql += " f.Total_Annual_Spending_per_User ";
+            }
+            if(param.getOrderByColumn().equals("sort5")){
+                sql += " f.Unit_Count ";
+            }
+            if(param.getOrderByColumn().equals("sort6")){
+                sql += " f.Average_Cost_Per_Unit ";
+            }
+            if(param.getOrderByColumn().equals("sort7")){
+                sql += " f.Beneficiary_Count_No_LIS ";
+            }
+            if(param.getOrderByColumn().equals("sort8")){
+                sql += " f.Beneficiary_Count_LIS ";
+            }
             if(param.getOrderByType()!=null && param.getOrderByType().equals("Desc")){
                 sql += " Desc ";
             }

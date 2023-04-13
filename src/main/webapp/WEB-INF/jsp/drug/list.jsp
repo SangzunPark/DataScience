@@ -99,6 +99,10 @@
                 search();
             });
 
+            document.getElementById("newBtn").addEventListener("click",function (e) {
+                printRowNew();
+            })
+
             //SORT
             document.getElementById("sortYear").addEventListener("click",function (e) {
                 clearPageNum();
@@ -115,41 +119,46 @@
                 setSortInfo("Generic",document.getElementById("sortGeneric"));
                 search();
             });
-            document.getElementById("newBtn").addEventListener("click",function (e) {
-                printRowNew();
-            })
-            // document.getElementById("sort1").addEventListener("click",function (e) {
-            //     clearPageNum();
-            //     search();
-            // });
-            // document.getElementById("sort2").addEventListener("click",function (e) {
-            //     clearPageNum();
-            //     search();
-            // });
-            // document.getElementById("sort3").addEventListener("click",function (e) {
-            //     clearPageNum();
-            //     search();
-            // });
-            // document.getElementById("sort4").addEventListener("click",function (e) {
-            //     clearPageNum();
-            //     search();
-            // });
-            // document.getElementById("sort5").addEventListener("click",function (e) {
-            //     clearPageNum();
-            //     search();
-            // });
-            // document.getElementById("sort6").addEventListener("click",function (e) {
-            //     clearPageNum();
-            //     search();
-            // });
-            // document.getElementById("sort7").addEventListener("click",function (e) {
-            //     clearPageNum();
-            //     search();
-            // });
-            // document.getElementById("sort8").addEventListener("click",function (e) {
-            //     clearPageNum();
-            //     search();
-            // });
+            document.getElementById("sort1").addEventListener("click",function (e) {
+                clearPageNum();
+                setSortInfo("sort1",document.getElementById("sort1"));
+                search();
+            });
+            document.getElementById("sort2").addEventListener("click",function (e) {
+                clearPageNum();
+                setSortInfo("sort2",document.getElementById("sort2"));
+                search();
+            });
+            document.getElementById("sort3").addEventListener("click",function (e) {
+                clearPageNum();
+                setSortInfo("sort3",document.getElementById("sort3"));
+                search();
+            });
+            document.getElementById("sort4").addEventListener("click",function (e) {
+                clearPageNum();
+                setSortInfo("sort4",document.getElementById("sort4"));
+                search();
+            });
+            document.getElementById("sort5").addEventListener("click",function (e) {
+                clearPageNum();
+                setSortInfo("sort5",document.getElementById("sort5"));
+                search();
+            });
+            document.getElementById("sort6").addEventListener("click",function (e) {
+                clearPageNum();
+                setSortInfo("sort6",document.getElementById("sort6"));
+                search();
+            });
+            document.getElementById("sort7").addEventListener("click",function (e) {
+                clearPageNum();
+                setSortInfo("sort7",document.getElementById("sort7"));
+                search();
+            });
+            document.getElementById("sort8").addEventListener("click",function (e) {
+                clearPageNum();
+                setSortInfo("sort8",document.getElementById("sort8"));
+                search();
+            });
         }
 
         let printRowValue = function(obj, drugItem, admin){
