@@ -6,11 +6,17 @@ import com.sangzunpark.datascience.dto.mapper.DrugMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.StringUtils;
 
+import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,6 +27,9 @@ public class DrugService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    DataSource dataSource;
 
     public List<CodeValue> getBrandCodeList(){
         List<CodeValue> codeValueList =  jdbcTemplate.query(
@@ -74,6 +83,116 @@ public class DrugService {
                         "   and Brand_Code = ? " +
                         "   and Generic_Code = ? ";
             int updateCount = jdbcTemplate.update(sql,paramList.toArray());
+            updateResult.setUpdateCount(updateCount);
+        }catch(Exception e){
+            success = false;
+            updateResult.setErrorMessage(e.getMessage());
+        }
+        updateResult.setSuccess(success);
+        return updateResult;
+    }
+
+    public UpdateResult saveDrug(Drug param){
+        PlatformTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
+        TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        UpdateResult updateResult = new UpdateResult();
+        boolean success = true;
+        int updateCount = 0;
+        try{
+            if(param.getYearCode()==null || param.getYearCode().equals("")){
+                String sql = "insert into YearDim(Year_Name) values (?)";
+                updateCount += jdbcTemplate.update(sql,param.getYearName());
+
+                List<Integer> maxNum = jdbcTemplate.query("select max(Year_Code) as MAX_CODE from YearDim ",  new RowMapper<Integer>() {
+                    @Override
+                    public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return rs.getInt("MAX_CODE");
+                    }
+                });
+                param.setYearCode(maxNum.get(0));
+            }
+
+            if(param.getGenericCode()==null || param.getGenericCode().equals("")){
+                String sql = "insert into Generic(Generic_Name) values (?)";
+                updateCount += jdbcTemplate.update(sql,param.getGenericName());
+
+                List<Integer> maxNum = jdbcTemplate.query("select max(Generic_Code) as MAX_CODE from Generic ",  new RowMapper<Integer>() {
+                    @Override
+                    public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return rs.getInt("MAX_CODE");
+                    }
+                });
+                param.setGenericCode(maxNum.get(0));
+            }
+
+            if(param.getBrandCode()==null || param.getBrandCode().equals("")){
+                String sql = "insert into Brand(Brand_Name) values (?)";
+                updateCount += jdbcTemplate.update(sql,param.getBrandName());
+
+                List<Integer> maxNum = jdbcTemplate.query("select max(Brand_Code) as MAX_CODE from Brand ",  new RowMapper<Integer>() {
+                    @Override
+                    public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return rs.getInt("MAX_CODE");
+                    }
+                });
+                param.setBrandCode(maxNum.get(0));
+            }
+
+            List<Object> paramList = new ArrayList<>();
+            paramList.add(param.getClaimCount());
+            paramList.add(param.getTotalSpending());
+            paramList.add(param.getBeneficiaryCount());
+            paramList.add(param.getTotalAnnualSpendingPerUser());
+            paramList.add(param.getUnitCount());
+            paramList.add(param.getAverageCostPerUnit());
+            paramList.add(param.getBeneficiaryCountNoLIS());
+            paramList.add(param.getBeneficiaryCountLIS());
+            paramList.add(param.getYearCode());
+            paramList.add(param.getBrandCode());
+            paramList.add(param.getGenericCode());
+            String sql = "insert into medi_fact( " +
+                    "   Claim_Count " +
+                    " , Total_Spending  " +
+                    " , Beneficiary_Count  " +
+                    " , Total_Annual_Spending_per_User  " +
+                    " , Unit_Count  " +
+                    " , Average_Cost_Per_Unit  " +
+                    " , Beneficiary_Count_No_LIS  " +
+                    " , Beneficiary_Count_LIS  " +
+                    " , Year_Code  " +
+                    " , Brand_Code  " +
+                    " , Generic_Code " +
+                    " ) values (?,?,?,?,?,?,?,?,?,?,?)";
+            updateCount+= jdbcTemplate.update(sql,paramList.toArray());
+            updateResult.setUpdateCount(updateCount);
+
+            transactionManager.commit(transactionStatus);
+        }catch(Exception e){
+            transactionManager.rollback(transactionStatus);
+            success = false;
+            updateResult.setErrorMessage(e.getMessage());
+        }
+        updateResult.setSuccess(success);
+        return updateResult;
+    }
+
+    public UpdateResult deleteDrug(Drug param){
+        UpdateResult updateResult = new UpdateResult();
+        boolean success = true;
+        int updateCount = 0;
+        List<Object> paramList = new ArrayList<>();
+        paramList.add(param.getYearCode());
+        paramList.add(param.getBrandCode());
+        paramList.add(param.getGenericCode());
+
+        try{
+            String sql = "delete from medi_fact where " +
+                    "     Year_Code = ? " +
+                    " and Brand_Code = ? " +
+                    " and Generic_Code = ?" ;
+            updateCount = jdbcTemplate.update(sql,paramList.toArray());
             updateResult.setUpdateCount(updateCount);
         }catch(Exception e){
             success = false;

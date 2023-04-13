@@ -59,8 +59,18 @@ public class DrugController {
         return new ResponseEntity<>(responseResult, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/drug/drugModify", method={RequestMethod.POST, RequestMethod.GET})
-    public ResponseEntity<UpdateResult> drugModify(@RequestBody Drug param){
+    @RequestMapping(value="/drug/admin/modifyDrug", method={RequestMethod.POST, RequestMethod.GET})
+    public ResponseEntity<UpdateResult> modifyDrug(@RequestBody Drug param){
         return new ResponseEntity<>(drugService.modifyDrug(param), HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/drug/admin/saveDrug", method={RequestMethod.POST, RequestMethod.GET})
+    public ResponseEntity<UpdateResult> saveDrug(@RequestBody Drug param){
+        return new ResponseEntity<>(drugService.saveDrug(param), HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/drug/admin/deleteDrug", method={RequestMethod.POST, RequestMethod.GET})
+    public ResponseEntity<UpdateResult> deleteDrug(@RequestBody Drug param){
+        return new ResponseEntity<>(drugService.deleteDrug(param), HttpStatus.OK);
     }
 }

@@ -12,17 +12,21 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class LoginController {
     @GetMapping("/login")
-    public String login(HttpServletRequest request){
+    public String login(HttpServletRequest request, HttpServletResponse response){
+        this.logOut(request, response);
         return "login";
     }
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        this.logOut(request, response);
+        return "redirect:/login?logout";
+    }
+
+    private void logOut(HttpServletRequest request, HttpServletResponse response){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-        return "redirect:/login?logout";
     }
-
 }
