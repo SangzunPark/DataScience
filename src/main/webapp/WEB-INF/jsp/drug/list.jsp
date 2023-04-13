@@ -99,9 +99,11 @@
                 search();
             });
 
-            document.getElementById("newBtn").addEventListener("click",function (e) {
-                printRowNew();
-            })
+            if(document.getElementById("newBtn")!=null) {
+                document.getElementById("newBtn").addEventListener("click", function (e) {
+                    printRowNew();
+                });
+            }
 
             //SORT
             document.getElementById("sortYear").addEventListener("click",function (e) {
@@ -777,11 +779,13 @@
             </tbody>
         </table>
     </div>
+    <c:if test="${IsAdmin}">
     <div class="row">
         <div class="text-right">
             <button id="newBtn" style="margin-right: 10px;" class="btn btn-primary">Add New</button>
         </div>
     </div>
+    </c:if>
     <div class="row">
         <div class="col-md-3">
             <select id="PageSize" class="form-control" style="float:left; width:100px;">
