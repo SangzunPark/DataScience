@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <title>Login Page</title>
     <!-- 부트스트랩 CDN 추가 -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/common/css/bootstrap.min.4.3.1.css">
     <!-- 부트스트랩 JS 추가 -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="/common/js/jquery-3.3.1.slim.min.js"></script>
+    <script src="/common/js/popper.min.js"></script>
+    <script src="/common/js/bootstrap.min.js"></script>
     <script>
     </script>
 </head>

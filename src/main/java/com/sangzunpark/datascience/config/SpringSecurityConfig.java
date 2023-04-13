@@ -23,8 +23,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                     .authorizeRequests()
-                    .antMatchers("/login","/signup","/signupProc","/logout","/connect").permitAll() // 로그인 페이지는 인증 없이 접근 가능
-                    //.antMatchers("/drug/admin/**").hasAnyRole("ADMIN")
+                    .antMatchers("/login","/signup","/signupProc","/logout","/connect","/common/**").permitAll() // 로그인 페이지는 인증 없이 접근 가능
+                    //.antMatchers("/drug/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated() // 로그인 이후 모든 요청은 인증이 필요
                 .and()
                     .formLogin()
