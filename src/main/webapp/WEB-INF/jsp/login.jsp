@@ -24,7 +24,7 @@
 </head>
 <body class="bg-image">
 <div class="container mt-5">
-    <div class="row justify-content-center">
+    <div class="row justify-content-center align-items-center" style="height:100vh">
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
