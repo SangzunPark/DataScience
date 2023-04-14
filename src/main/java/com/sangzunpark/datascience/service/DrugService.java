@@ -99,6 +99,9 @@ public class DrugService {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         UpdateResult updateResult = new UpdateResult();
         boolean success = true;
+        boolean insertYearNewCode = false;
+        boolean insertBrandNewCode = false;
+        boolean insertGenericNewCode = false;
         int updateCount = 0;
         try{
             if(param.getYearCode()==null || param.getYearCode().equals("")){
@@ -111,6 +114,7 @@ public class DrugService {
                         return rs.getInt("MAX_CODE");
                     }
                 });
+                insertYearNewCode = true;
                 param.setYearCode(maxNum.get(0));
             }
 
@@ -124,6 +128,7 @@ public class DrugService {
                         return rs.getInt("MAX_CODE");
                     }
                 });
+                insertGenericNewCode = true;
                 param.setGenericCode(maxNum.get(0));
             }
 
@@ -137,9 +142,32 @@ public class DrugService {
                         return rs.getInt("MAX_CODE");
                     }
                 });
+                insertBrandNewCode = true;
                 param.setBrandCode(maxNum.get(0));
             }
 
+            //PK duplicate check
+            if(insertBrandNewCode==false && insertGenericNewCode==false && insertYearNewCode==false){
+                List<Object> paramList = new ArrayList<>();
+                paramList.add(param.getYearCode());
+                paramList.add(param.getBrandCode());
+                paramList.add(param.getGenericCode());
+                List<Integer> duplicateCount = jdbcTemplate.query(
+                        "select count(*) as CNT from medi_fact " +
+                        " where Year_Code  = ? " +
+                        "   and Brand_Code = ? " +
+                        "   and Generic_Code = ? "
+                    , paramList.toArray()
+                    ,  new RowMapper<Integer>() {
+                    @Override
+                    public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return rs.getInt("CNT");
+                    }
+                });
+                if(duplicateCount.get(0) > 0){
+                    throw new Exception("These are already registered Year, Brand, Generic (duplicate PrimaryKey)");
+                }
+            }
             List<Object> paramList = new ArrayList<>();
             paramList.add(param.getClaimCount());
             paramList.add(param.getTotalSpending());
