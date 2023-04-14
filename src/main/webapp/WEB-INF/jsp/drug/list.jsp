@@ -35,11 +35,40 @@
             color: #fff;
             text-decoration: none;
         }
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* 투명도 조절 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .popup {
+            background-color: #eee;
+            padding: 20px;
+            border-radius: 5px;
+            width: 70%;
+            height: 70%;
+            overflow: auto;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
     </style>
     <!-- 부트스트랩 JS 파일 -->
     <script src="/common/js/jquery.min.3.5.1.js"></script>
     <script src="/common/js/popper.min.1.16.0.js"></script>
     <script src="/common/js/bootstrap.min.4.5.2.js"></script>
+    <script src="/common/js/highcharts.10.3.3.js"></script>
     <script>
         let commonCode = {Brand:[], Generic:[], Year:[]};
         let sortInfo = {column:null, desc:false, node:null};
@@ -161,6 +190,42 @@
                 setSortInfo("sort8",document.getElementById("sort8"));
                 search();
             });
+
+            document.getElementById("popupClose").addEventListener("click",function () {
+                closePopup();
+            })
+        }
+        let closePopup = function(){
+            document.getElementById("popupOverlay").style.display = "none";
+            document.getElementById("chartArea").innerHTML = "";
+        }
+        let openPopup = function(drugItem){
+            document.getElementById("popupOverlay").style.display = "flex";
+            let options = {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: drugItem.brandName + ", "+drugItem.genericName
+                },
+                xAxis: {
+                    categories: ['2010', '2011', '2012', '2013', '2014']
+                },
+                yAxis: {
+                    title: {
+                        text: ''
+                    }
+                },
+                series: [{
+                    name: 'Average Cost per Unit',
+                    data:  [2,3,5,1,2]
+                }, {
+                    name: 'Total Annual Spending per User',
+                    data: [1,2,3,4,5]
+                }]
+            }
+            // Create the chart
+            var chart = new Highcharts.Chart('chartArea',options);
         }
 
         let printRowValue = function(obj, drugItem, admin){
@@ -180,6 +245,11 @@
             obj.td7.innerHTML = drugItem.beneficiaryCountNoLIS;
             obj.td8.innerHTML = drugItem.beneficiaryCountLIS;
             obj.tdButtun.innerHTML = "";
+
+            obj.tr.addEventListener("dblclick",function (e) {
+                openPopup(drugItem);
+            })
+
             if(admin) {
                 let button1 = document.createElement("button");
                 button1.className = "btn btn-sm btn-info";
@@ -592,7 +662,7 @@
             let tdButtun = document.createElement("td");
             let tdObj = {tr:tr, yearTd:yearTd, brandTd:brandTd, genericTd:genericTd, tdButtun:tdButtun
                 ,td1:td1,td2:td2,td3:td3,td4:td4,td5:td5,td6:td6,td7:td7,td8:td8};
-
+            tr.style.cursor = "pointer";
             tr.appendChild(yearTd);
             tr.appendChild(brandTd);
             tr.appendChild(genericTd);
@@ -703,6 +773,15 @@
     </script>
 </head>
 <body>
+<div id="popupOverlay" class="popup-overlay" style="display: none;">
+    <div class="popup">
+        <button id="popupClose" class="close-btn">X</button>
+        <h3> </h3>
+        <div id="chartArea">
+
+        </div>
+    </div>
+</div>
 <div class="container-fluid">
     <div class="row">
         <div class="text-right">
