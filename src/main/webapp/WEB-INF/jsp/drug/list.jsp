@@ -201,6 +201,11 @@
         }
         let openPopup = function(drugItem){
             document.getElementById("popupOverlay").style.display = "flex";
+            let paramObj = {
+                brand : drugItem.brandCode,
+                generic : drugItem.genericCode
+            }
+            /*
             let options = {
                 chart: {
                     type: 'line'
@@ -226,6 +231,44 @@
             }
             // Create the chart
             var chart = new Highcharts.Chart('chartArea',options);
+             */
+
+            $.ajax({
+                async: false,
+                type: "POST",
+                url: "/drug/chartDrugData",
+                data: JSON.stringify(paramObj),
+                dataType: 'json',
+                contentType: "application/json",
+                success: function (data) {
+                    if(data.series!=null && data.categories!=null){
+                        let options = {
+                            chart: {
+                                type: 'line'
+                            },
+                            title: {
+                                text: drugItem.brandName + ", "+drugItem.genericName
+                            },
+                            xAxis: {
+                                categories: data.categories
+                            },
+                            yAxis: {
+                                title: {
+                                    text: ''
+                                }
+                            },
+                            series: data.series
+                        }
+                        // Create the chart
+                        var chart = new Highcharts.Chart('chartArea',options);
+                    }
+                },
+                error: function (xhr, status, e) {
+                    let httpStatusCode = xhr.status;
+                    alert("error : "+httpStatusCode);
+
+                }
+            });
         }
 
         let printRowValue = function(obj, drugItem, admin){

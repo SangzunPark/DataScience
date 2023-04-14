@@ -20,6 +20,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -228,6 +229,49 @@ public class DrugService {
         }
         updateResult.setSuccess(success);
         return updateResult;
+    }
+
+    public DrugChartResponse getDrugChartData(DrugParam param){
+        DrugChartResponse drugChartResponse = new DrugChartResponse();
+        List<Object> paramList = new ArrayList<>();
+        String sql = "select f.*  " +
+                " , y.Year_Name " +
+                " , g.Generic_Name " +
+                " , b.Brand_Name " +
+                " from medi_fact f " +
+                " left outer join YearDim y " +
+                "   on y.Year_Code = f.Year_Code " +
+                " left outer  join Generic g " +
+                "   on g.Generic_Code = f.Generic_Code " +
+                " left outer join Brand b " +
+                "   on b.Brand_Code = f.Brand_Code " +
+                " where 1=1 ";
+        if(param.getBrand()!=null){
+            sql += " and f.Brand_Code = ? ";
+            paramList.add(param.getBrand());
+        }
+        if(param.getGeneric()!=null){
+            sql += " and f.Generic_Code = ? ";
+            paramList.add(param.getGeneric());
+        }
+
+        sql += " order by f.Year_Code ";
+
+        List<Drug> drugList =  jdbcTemplate.query(sql, paramList.toArray() , new DrugMapper());
+        DrugChartSeries seriesTotalAnnualSpendingPerUser = new DrugChartSeries("Total Annual Spending per User");
+        DrugChartSeries seriesAverageCostPerUnit = new DrugChartSeries("Average Cost per Unit");
+        List<String> yearName = new ArrayList<>();
+        for(int i=0; i<drugList.size(); i++){
+            Drug drug = drugList.get(i);
+            yearName.add(drug.getYearName());
+            seriesTotalAnnualSpendingPerUser.addData(drug.getTotalAnnualSpendingPerUser());
+            seriesAverageCostPerUnit.addData(drug.getAverageCostPerUnit());
+        }
+
+        drugChartResponse.setCategories(yearName);
+        drugChartResponse.setSeries(Arrays.asList(seriesTotalAnnualSpendingPerUser, seriesAverageCostPerUnit));
+
+        return drugChartResponse;
     }
 
     public DrugResponse getDrugList(DrugParam param){
