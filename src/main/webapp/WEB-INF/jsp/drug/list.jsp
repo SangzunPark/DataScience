@@ -704,15 +704,10 @@
 </head>
 <body>
 <div class="container-fluid">
-    <div class="row" style="height:20px;">
-    </div>
-    <!-- 로그아웃 버튼 -->
     <div class="row">
         <div class="text-right">
-            <button class="btn btn-danger"><a class="whiteFont" href="/logout">Logout</a></button>
+            <img src="/common/image/MediLogo.png" style="width:150px;height:89px;">
         </div>
-    </div>
-    <div class="row" style="height:20px;">
     </div>
     <div class="row justify-content-between">
         <div class="col-md-2">
@@ -730,11 +725,14 @@
                 <option value="">Generic</option>
             </select>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-2">
             <div class="input-group" style="white-space: nowrap">
                 <input id="searchText" type="text" class="form-control" placeholder="search text here">
                 <button id="searchButton" class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
             </div>
+        </div>
+        <div class="col-md-4 text-right">
+            <button class="btn btn-danger"><a class="whiteFont" href="/logout">Logout</a></button>
         </div>
     </div>
     <div class="row" style="height:20px;">

@@ -6,6 +6,15 @@
     <title>Login Page</title>
     <!-- 부트스트랩 CDN 추가 -->
     <link rel="stylesheet" href="/common/css/bootstrap.min.4.3.1.css">
+    <style>
+        .bg-image {
+            background-image: url('/common/image/MediView.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 100vh;
+        }
+    </style>
     <!-- 부트스트랩 JS 추가 -->
     <script src="/common/js/jquery-3.3.1.slim.min.js"></script>
     <script src="/common/js/popper.min.js"></script>
@@ -13,7 +22,7 @@
     <script>
     </script>
 </head>
-<body>
+<body class="bg-image">
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-4">
