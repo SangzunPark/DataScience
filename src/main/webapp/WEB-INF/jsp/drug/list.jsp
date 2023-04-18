@@ -882,6 +882,7 @@
             </tr>
             </thead>
             <tbody id="drugListTableBody">
+            <!--
             <tr>
                 <td>2021</td>
                 <td>Brand1</td>
@@ -896,6 +897,7 @@
                 <td>25</td>
                 <td><button class="btn btn-sm btn-info">Modify</button></td>
             </tr>
+            -->
             </tbody>
         </table>
     </div>
